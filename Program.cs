@@ -18,7 +18,7 @@ namespace Advent_of_Code
 
             static void Day1Part1()
             {
-                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\ADVENT\Advent 2\input1\input.txt");
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input1\input.txt");
                 string line = "";
                 List<int> numberList = new List<int>();
                 int number1 = 0;
@@ -48,7 +48,7 @@ namespace Advent_of_Code
             }
             static void Day1Part2()
             {
-                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\ADVENT\Advent 2\input1\input.txt");
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input1\input.txt");
                 string line = "";
                 List<int> numberList = new List<int>();
                 int number1 = 0;
@@ -86,7 +86,7 @@ namespace Advent_of_Code
             }
             static void Day2Part1()
             {
-                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\ADVENT\Advent 2\input2\input.txt");
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input2\input.txt");
                 string line = "";
                 int countCorrect = 0;
                 int countAll = 0;
@@ -133,7 +133,7 @@ namespace Advent_of_Code
             }
             static void Day2Part2()
             {
-                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\ADVENT\Advent 2\input2\input.txt");
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input2\input.txt");
                 string line = "";
                 int countCorrect = 0;
                 int countAll = 0;
@@ -181,13 +181,29 @@ namespace Advent_of_Code
             }
             static void Day3Part1()
             {
-                /*1. Calculate how big the grid has to be on x, based on y=x/3
-                 *2. Find the pattern on each x line and repeat it until it reaches the x
-                 *3. Convert the grid into node system
-                 *4. Check the node on each y+1 and x+3 and assign them to a value
-                 *5. Return the value
-                 */
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input3\input.txt");
+                string line = "";
+                //1. Calculate how big the grid has to be on x, based on y=x/3
+                //2. Find the pattern on each x line and repeat it until it reaches the x
+                //3. Convert the grid into node system
+                //4. Check the node on each y+1 and x+3 and assign them to a value
+                //5. Return the value
             }
         }
     }
+
+    public class Day3_Node
+    {
+        int x { get; set; }
+        int y { get; set; }
+        char value { get; set; }
+
+        public Day3_Node(int _x, int _y, char _value)
+        {
+            x = _x;
+            y = _y;
+            value = _value;
+        }
+    }
 }
+
