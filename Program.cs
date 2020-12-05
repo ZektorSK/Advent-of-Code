@@ -15,7 +15,9 @@ namespace Advent_of_Code
             //Day2Part1();
             //Day2Part2();
             //Day3Part1();
-            Day3Part2();
+            //Day3Part2();
+            //Day4Part1();
+            Day4Part2();
             Console.ReadLine();
 
             static void Day1Part1()
@@ -326,6 +328,128 @@ namespace Advent_of_Code
                 //4. do five functions and return value
                 Console.WriteLine($"Calculated the trees! == {answer}");
             }
+            static void Day4Part1()
+            {
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input4\input.txt");
+                string input = "";
+                int count = 0;
+                List<string> subInput = new List<string>();
+
+                //1. Assign the input to a string
+                while ((input = sr.ReadLine()) != null)
+                {
+                    string temp = "";
+                    while (true)
+                    {
+                        if (string.IsNullOrEmpty(input) == true)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            temp += $"{input} ";
+                            input = sr.ReadLine();
+                        }
+                    }
+                    subInput.Add(temp);
+                }
+
+                //2 Create substrings based on empty lines
+                ///thanks to stackexchange!
+                for (int x = 0; x < subInput.Count; x++)
+                {
+                    Console.WriteLine(subInput[x]);
+                    Console.WriteLine("");
+                }
+                int countx = subInput.Count();
+                Console.WriteLine(countx);
+
+                for(int x = 0; x < subInput.Count; x++)
+                {
+                    if(subInput[x].Contains("byr:") && subInput[x].Contains("iyr:") && subInput[x].Contains("eyr:") && subInput[x].Contains("hgt:") &&
+                       subInput[x].Contains("hcl:") && subInput[x].Contains("ecl:") && subInput[x].Contains("pid"))
+                    {
+                        count++;
+                    }
+                }
+                Console.WriteLine(count);
+            }
+            static void Day4Part2()
+            {
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input4\input.txt");
+                string input = "";
+                int count = 0;
+                List<Day4_Passport> PassportList = new List<Day4_Passport>();
+                List<string> subInput = new List<string>();
+
+                //1. Assign the input to a string
+                while ((input = sr.ReadLine()) != null)
+                {
+                    string temp = "";
+                    while (true)
+                    {
+                        if(string.IsNullOrEmpty(input) == true)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            temp +=$"{input} ";
+                            input = sr.ReadLine();
+                        }
+                    }
+                    subInput.Add(temp);
+                }
+
+                //2 Create substrings based on empty lines
+                ///thanks to stackexchange!
+                for (int x = 0; x < subInput.Count; x++)
+                {
+                    Console.WriteLine(subInput[x]);
+                    Console.WriteLine("");
+                }
+                int countx = subInput.Count();
+                Console.WriteLine(countx);
+
+                //3. check for all the text and create an object
+                for(int x = 0; x < subInput.Count; x++)
+                {
+                    string tempLine = subInput[x];
+                    int _byr = int.Parse(Day4Part1FunctionField("byr:", tempLine));
+                    Console.WriteLine(_byr);
+                    int _iyr = int.Parse(Day4Part1FunctionField("iyr:", tempLine));
+                    Console.WriteLine(_iyr);
+                    int _eyr = int.Parse(Day4Part1FunctionField("eyr:", tempLine));
+                    Console.WriteLine(_eyr);
+                    int _hgt = int.Parse(Day4Part1FunctionField("hgt:", tempLine).Remove(Day4Part1FunctionField("hgt:", tempLine).IndexOf("c")));
+                    Console.WriteLine(_hgt);
+                    string _hcl = Day4Part1FunctionField("hcl:", tempLine);
+                    Console.WriteLine(_hcl);
+                    string _ecl = Day4Part1FunctionField("ecl:", tempLine);
+                    Console.WriteLine(_ecl);
+                    float _pid = float.Parse(Day4Part1FunctionField("pid:", tempLine));
+                    Console.WriteLine(_pid);
+                    int _cid = int.Parse(Day4Part1FunctionField("cid:", tempLine));
+                    Console.WriteLine(_cid);
+                    bool _isValid = false;
+                    if (_byr != 0 && _iyr != 0 && _eyr != 0 && _hgt != 0 && _hcl != "0" && _ecl != "0" && _pid != 0)
+                    {
+                        _isValid = true;
+                    }
+                    Console.WriteLine(_isValid);
+                    Day4_Passport passport = new Day4_Passport(_byr, _iyr, _eyr, _hgt, _hcl, _ecl, _pid, _cid, _isValid);
+                    PassportList.Add(passport);
+                    Console.WriteLine($"[{x}]\nbirth year: {passport.byr}, issue year: {passport.iyr}, expiration year: {passport.eyr}, " +
+                    $"height: {passport.hgt}, hair color: {passport.hcl}, eye color: {passport.ecl}, country id: {passport.cid}, is valid: {passport.isValid}\n");
+                }
+
+                //2. iterate over each object and check which ones have isValid = true, count them
+
+
+                //3. return value
+
+            }
+
             static int Day3Part2FunctionFunction(int f1, int f2, List<Day3_Node> gList)
             {
                 int fx1 = 0;
@@ -365,6 +489,29 @@ namespace Advent_of_Code
                         return 0;
                 }
             }
+            static string Day4Part1FunctionField(string par, string line)
+            {
+                string back = "";
+                int parINT = line.IndexOf(par);
+                if(parINT == -1)
+                {
+                    return "0";
+                }
+                else
+                {
+                    while (line[parINT] != ':')
+                    {
+                        parINT += 1;
+                    }
+                    parINT += 1;
+                    while (char.IsWhiteSpace(line[parINT]) != true)
+                    {
+                        back += line[parINT];
+                        parINT++;
+                    }
+                    return back;
+                }
+            }
         }
     }
 
@@ -379,6 +526,38 @@ namespace Advent_of_Code
             col = _col;
             row = _row;
             value = _value;
+        }
+    }
+    public class Day4_Passport
+    {
+        //birth year
+        public int byr { get; set; }
+        //issue year
+        public int iyr { get; set; }
+        //expiration year
+        public int eyr { get; set; }
+        //height
+        public int hgt { get; set; }
+        //hair color
+        public string hcl { get; set; }
+        //eye color
+        public string ecl { get; set; }
+        //passport ID (long number)
+        public float pid { get; set; }
+        //country ID (optional)
+        public int cid { get; set; }
+        //boolean value to determnite if the passport is valid
+        public bool isValid { get; set; }
+
+        public Day4_Passport(int _byr, int _iyr, int _eyr, int _hgt, string _hcl, string _ecl, float _pid, int _cid, bool _isValid)
+        {
+            byr = _byr;
+            iyr = _iyr;
+            eyr = _eyr;
+            hgt = _hgt;
+            hcl = _hcl;
+            ecl = _ecl;
+            pid = _pid;
         }
     }
 }
