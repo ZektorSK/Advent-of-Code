@@ -367,7 +367,7 @@ namespace Advent_of_Code
                 for(int x = 0; x < subInput.Count; x++)
                 {
                     if(subInput[x].Contains("byr:") && subInput[x].Contains("iyr:") && subInput[x].Contains("eyr:") && subInput[x].Contains("hgt:") &&
-                       subInput[x].Contains("hcl:") && subInput[x].Contains("ecl:") && subInput[x].Contains("pid"))
+                       subInput[x].Contains("hcl:") && subInput[x].Contains("ecl:") && subInput[x].Contains("pid:"))
                     {
                         count++;
                     }
@@ -410,44 +410,131 @@ namespace Advent_of_Code
                 }
                 int countx = subInput.Count();
                 Console.WriteLine(countx);
+                char[] compareValues = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
                 //3. check for all the text and create an object
-                for(int x = 0; x < subInput.Count; x++)
+                for (int x = 0; x < subInput.Count; x++)
                 {
                     string tempLine = subInput[x];
+
                     int _byr = int.Parse(Day4Part1FunctionField("byr:", tempLine));
-                    Console.WriteLine(_byr);
+                    //byr (Birth Year) - four digits; at least 1920 and at most 2002.
+                    if ((_byr >= 1920 && _byr <= 2002) != true)
+                    {
+                        _byr = 0;
+                    }
+
+                    //iyr (Issue Year) - four digits; at least 2010 and at most 2020.
                     int _iyr = int.Parse(Day4Part1FunctionField("iyr:", tempLine));
-                    Console.WriteLine(_iyr);
+                    if ((_iyr >= 2010 && _iyr <= 2020) != true)
+                    {
+                        _iyr = 0;
+                    }
+
+                    //eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
                     int _eyr = int.Parse(Day4Part1FunctionField("eyr:", tempLine));
-                    Console.WriteLine(_eyr);
-                    int _hgt = int.Parse(Day4Part1FunctionField("hgt:", tempLine).Remove(Day4Part1FunctionField("hgt:", tempLine).IndexOf("c")));
-                    Console.WriteLine(_hgt);
+                    if ((_eyr >= 2020 && _eyr <= 2030) != true)
+                    {
+                        _eyr = 0;
+                    }
+
+                    /*hgt (Height) - a number followed by either cm or in:
+                    If cm, the number must be at least 150 and at most 193.
+                    If in, the number must be at least 59 and at most 76.*/
+                    string __hgt = Day4Part1FunctionField("hgt:", tempLine);
+                    int _hgt;
+                    if (__hgt.Contains("cm"))
+                    {
+                        __hgt = __hgt.Remove(__hgt.IndexOf("c"));
+                        _hgt = int.Parse(__hgt);
+                        if((_hgt >= 150 && _hgt <= 193) != true)
+                        {
+                            _hgt = 0;
+                        }
+                    } else if (__hgt.Contains("in"))
+                    {
+                        __hgt = __hgt.Remove(__hgt.IndexOf("i"));
+                        _hgt = int.Parse(__hgt);
+                        if ((_hgt >= 59 && _hgt <= 76) != true)
+                        {
+                            _hgt = 0;
+                        }
+                    }
+                    else
+                    {
+                        _hgt = 0;
+                    }
+
+
+                    //hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
                     string _hcl = Day4Part1FunctionField("hcl:", tempLine);
-                    Console.WriteLine(_hcl);
+                    if (_hcl.Contains("#"))
+                    {
+                        if (_hcl.Length != 7
+                            )
+                        {
+                            _hcl = "0";
+                        }
+                        else
+                        {
+                            for(int y = 1; y < _hcl.ToCharArray().Length; y++)
+                            {
+                                if (compareValues.Contains(_hcl[y]) != true)
+                                {
+                                    _hcl = "0";
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _hcl = "0";
+                    }
+
+                    //ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
                     string _ecl = Day4Part1FunctionField("ecl:", tempLine);
-                    Console.WriteLine(_ecl);
-                    float _pid = float.Parse(Day4Part1FunctionField("pid:", tempLine));
-                    Console.WriteLine(_pid);
+                    if(_ecl != "amb" && _ecl != "blu" && _ecl != "brn" && _ecl != "gry" && _ecl != "grn" && _ecl != "hzl" && _ecl != "oth")
+                    {
+                        _ecl = "0";
+                    }
+
+                    //pid (Passport ID) - a nine-digit number, including leading zeroes.
+                    string __pid = Day4Part1FunctionField("pid:", tempLine);
+                    float _pid = 0;
+                    if (__pid.Length == 9)
+                    {
+                        if (__pid != "0")
+                        {
+                            _pid = float.Parse(__pid);
+                        }
+                    }
+
+                    //cid (Country ID) - ignored, missing or not.
                     int _cid = int.Parse(Day4Part1FunctionField("cid:", tempLine));
-                    Console.WriteLine(_cid);
+
                     bool _isValid = false;
+
                     if (_byr != 0 && _iyr != 0 && _eyr != 0 && _hgt != 0 && _hcl != "0" && _ecl != "0" && _pid != 0)
                     {
                         _isValid = true;
                     }
-                    Console.WriteLine(_isValid);
                     Day4_Passport passport = new Day4_Passport(_byr, _iyr, _eyr, _hgt, _hcl, _ecl, _pid, _cid, _isValid);
                     PassportList.Add(passport);
                     Console.WriteLine($"[{x}]\nbirth year: {passport.byr}, issue year: {passport.iyr}, expiration year: {passport.eyr}, " +
-                    $"height: {passport.hgt}, hair color: {passport.hcl}, eye color: {passport.ecl}, country id: {passport.cid}, is valid: {passport.isValid}\n");
+                    $"height: {passport.hgt}, hair color: {passport.hcl}, eye color: {passport.ecl}, passport id: {passport.pid}, country id: {passport.cid}\nis valid: {passport.isValid}\n");
                 }
 
                 //2. iterate over each object and check which ones have isValid = true, count them
-
+                foreach (Day4_Passport pass in PassportList)
+                {
+                    if (pass.isValid == true)
+                    {
+                        count++;
+                    }
+                }
 
                 //3. return value
-
+                Console.WriteLine(count);
             }
 
             static int Day3Part2FunctionFunction(int f1, int f2, List<Day3_Node> gList)
@@ -558,6 +645,7 @@ namespace Advent_of_Code
             hcl = _hcl;
             ecl = _ecl;
             pid = _pid;
+            isValid = _isValid;
         }
     }
 }
