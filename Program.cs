@@ -17,7 +17,10 @@ namespace Advent_of_Code
             //Day3Part1();
             //Day3Part2();
             //Day4Part1();
-            Day4Part2();
+            //Day4Part2();
+            //Day5Part1();
+            Day5Part2();
+            //Day5Test();
             Console.ReadLine();
 
             static void Day1Part1()
@@ -178,10 +181,10 @@ namespace Advent_of_Code
                             countCorrect++;
                         }
                         countAll++;
-                        Console.WriteLine($"The count of all passwords: {countAll}");
-                        Console.WriteLine($"The count of possible passwords: {countCorrect}");
                     }
                 }
+                Console.WriteLine($"The count of all passwords: {countAll}");
+                Console.WriteLine($"The count of possible passwords: {countCorrect}");
             }
             static void Day3Part1()
             {
@@ -536,6 +539,230 @@ namespace Advent_of_Code
                 //3. return value
                 Console.WriteLine(count);
             }
+            static void Day5Part1()
+            {
+                //1. Create a list from the input and iterate over it
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input5\input.txt");
+                string input = "";
+                List<string> instructionsList = new List<string>();
+                List<Day5_Seat> seatList = new List<Day5_Seat>();
+
+                while ((input = sr.ReadLine()) != null)
+                {
+                    instructionsList.Add(input);
+                }
+                foreach(string s in instructionsList)
+                {
+                    Console.WriteLine(s);
+                }
+                for(int x = 0; x < instructionsList.Count; x++)
+                {
+                    //2. divide by two, if the input is of lower half do x-1
+                    string instruction = instructionsList[x];
+                    List<int> rowInput = Enumerable.Range(0, 128).ToList();
+                    List<int> collumnInput = Enumerable.Range(0, 8).ToList();
+                    int row = 0;
+                    int collumn = 0;
+                    for (int y = 0; y < instruction.Length; y++)
+                    {
+                        switch (instruction[y])
+                        {
+                            case 'F':
+                                Console.Write("Row list: ");
+                                //DEBUG
+                                foreach (int i in rowInput)
+                                {
+                                    Console.Write($"{i}, ");
+                                }
+                                Console.WriteLine("");
+                                Day5Part1FunctionMath(rowInput, instruction[y]);
+
+                                Console.WriteLine("removed upper half row!");
+                                break;
+                            case 'B':
+                                Console.Write("Row list: ");
+                                //DEBUG
+                                foreach (int i in rowInput)
+                                {
+                                    Console.Write($"{i}, ");
+                                }
+                                Console.WriteLine("");
+
+                                Day5Part1FunctionMath(rowInput, instruction[y]);
+
+                                Console.WriteLine("removed lower half row!");
+                                break;
+                            case 'R':
+                                Console.Write("Collumn list: ");
+                                //DEBUG
+                                foreach (int i in collumnInput)
+                                {
+                                    Console.Write($"{i}, ");
+                                }
+                                Console.WriteLine("");
+                                Day5Part1FunctionMath(collumnInput, instruction[y]);
+
+                                Console.WriteLine("removed upper half collumn!");
+                                break;
+                            case 'L':
+                                Console.Write("Collumn list: ");
+                                //DEBUG
+                                foreach (int i in collumnInput)
+                                {
+                                    Console.Write($"{i}, ");
+                                }
+                                Console.WriteLine("");
+
+                                Day5Part1FunctionMath(collumnInput, instruction[y]);
+
+                                Console.WriteLine("removed lower half collumn!");
+                                break;
+                        }
+                    }
+                    row += rowInput[0];
+                    collumn += collumnInput[0];
+                    Console.WriteLine($"row: {row}");
+                    Console.WriteLine($"collumn: {collumn}\n");
+                    Day5_Seat seat = new Day5_Seat(row, collumn);
+                    seatList.Add(seat);
+                }
+                var answer = seatList.OrderByDescending(x => x.ID).First();
+                Console.WriteLine($"answer: {answer.ID}");
+            }
+            static void Day5Part2()
+            {
+                //1. Create a list from the input and iterate over it
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input5\input.txt");
+                string input = "";
+                List<string> instructionsList = new List<string>();
+                List<Day5_Seat> seatList = new List<Day5_Seat>();
+                List<Day5_Seat> missingID = new List<Day5_Seat>();
+
+                while ((input = sr.ReadLine()) != null)
+                {
+                    instructionsList.Add(input);
+                }
+                for (int x = 0; x < instructionsList.Count; x++)
+                {
+                    //2. divide by two, if the input is of lower half do x-1
+                    string instruction = instructionsList[x];
+                    List<int> rowInput = Enumerable.Range(0, 128).ToList();
+                    List<int> collumnInput = Enumerable.Range(0, 8).ToList();
+                    int row = 0;
+                    int collumn = 0;
+                    for (int y = 0; y < instruction.Length; y++)
+                    {
+                        switch (instruction[y])
+                        {
+                            case 'F':
+                                Day5Part1FunctionMath(rowInput, instruction[y]);
+                                break;
+                            case 'B':
+                                Day5Part1FunctionMath(rowInput, instruction[y]);
+                                break;
+                            case 'R':
+                                Day5Part1FunctionMath(collumnInput, instruction[y]);
+                                break;
+                            case 'L':
+                                Day5Part1FunctionMath(collumnInput, instruction[y]);
+                                break;
+                        }
+                    }
+                    row += rowInput[0];
+                    collumn += collumnInput[0];
+                    Day5_Seat seat = new Day5_Seat(row, collumn);
+                    seatList.Add(seat);
+                }
+
+                List<Day5_Seat> sortedList = seatList.OrderByDescending(x => x.ID).ToList();
+                for(int x = 0; x < sortedList.Count(); x++)
+                {
+                    int y = x++;
+                    if((sortedList[y].ID - sortedList[x].ID) != 1)
+                    {
+                        missingID.Add(sortedList[y]);
+                    }
+                }
+                foreach(Day5_Seat seat in sortedList)
+                {
+                    Console.WriteLine($"ID: {seat.ID}\nRow: {seat.row}\nCollumn: {seat.collumn}\n");
+                }
+                List<Day5_Seat> sortedMissingList = missingID.OrderByDescending(x => x.ID).ToList();
+                Console.WriteLine("");
+                foreach(Day5_Seat seat in sortedMissingList)
+                {
+                    Console.WriteLine($"Missing ID: {seat.ID}");
+                }
+            }
+
+            static void Day5Test()
+            {
+                string instruction = "FBFBBFFRLR";
+                List<int> rowInput = Enumerable.Range(0, 128).ToList();
+                List<int> collumnInput = Enumerable.Range(0, 8).ToList();
+                int row = 0;
+                int collumn = 0;
+                for (int y = 0; y < instruction.Length; y++)
+                {
+                    switch (instruction[y])
+                    {
+                        case 'F':
+                            Console.Write("Row list: ");
+                            //DEBUG
+                            foreach (int i in rowInput)
+                            {
+                                Console.Write($"{i}, ");
+                            }
+                            Console.WriteLine("");
+                            Day5Part1FunctionMath(rowInput, instruction[y]);
+
+                            Console.WriteLine("removed upper half row!");
+                            break;
+                        case 'B':
+                            Console.Write("Row list: ");
+                            //DEBUG
+                            foreach (int i in rowInput)
+                            {
+                                Console.Write($"{i}, ");
+                            }
+                            Console.WriteLine("");
+
+                            Day5Part1FunctionMath(rowInput, instruction[y]);
+
+                            Console.WriteLine("removed lower half row!");
+                            break;
+                        case 'R':
+                            Console.Write("Collumn list: ");
+                            //DEBUG
+                            foreach (int i in collumnInput)
+                            {
+                                Console.Write($"{i}, ");
+                            }
+                            Console.WriteLine("");
+                            Day5Part1FunctionMath(collumnInput, instruction[y]);
+
+                            Console.WriteLine("removed upper half collumn!");
+                            break;
+                        case 'L':
+                            Console.Write("Collumn list: ");
+                            //DEBUG
+                            foreach (int i in collumnInput)
+                            {
+                                Console.Write($"{i}, ");
+                            }
+                            Console.WriteLine("");
+
+                            Day5Part1FunctionMath(collumnInput, instruction[y]);
+
+                            Console.WriteLine("removed lower half collumn!");
+                            break;
+                    }
+                }
+                row += rowInput[0];
+                collumn += collumnInput[0];
+                Console.WriteLine($"row: {row}");
+                Console.WriteLine($"collumn: {collumn}\n");
+                }
 
             static int Day3Part2FunctionFunction(int f1, int f2, List<Day3_Node> gList)
             {
@@ -599,6 +826,81 @@ namespace Advent_of_Code
                     return back;
                 }
             }
+            static List<int> Day5Part1FunctionMath(List<int> tempList, char highOrdown)
+            {
+                int min = tempList.Min();
+                int max = tempList.Max();
+                int middle = 0;
+                if (min == 0)
+                {
+                    middle = tempList.Count() / 2;
+                }
+                else if (tempList.Count() % 2 != 0)
+                {
+                    double tempmiddle = (((max - min) / 2) + min) + 1;
+                    middle = Convert.ToInt32(tempmiddle);
+                } else if(tempList.Count() == 2)
+                {
+                    switch (highOrdown)
+                    {
+                        case 'F':
+                            //F means to take the lower half
+                            tempList.RemoveAt(1);
+                            return tempList;
+                            break;
+                        case 'B':
+                            //B means to take the upper half
+                            tempList.RemoveAt(0);
+                            return tempList;
+                            break;
+                        case 'R':
+                            //R means to take the upper half
+                            tempList.RemoveAt(0);
+                            return tempList;
+                            break;
+                        case 'L':
+                            //L means to take the lower half
+                            tempList.RemoveAt(1);
+                            return tempList;
+                            break;
+                    }
+                }
+                else
+                {
+                    middle = ((max - min) / 2) + min + 1;
+                }
+                switch (highOrdown)
+                {
+                    case 'F':
+                        //F means to take the lower half
+                        for(int x = middle; x <= max; x++)
+                        {
+                            tempList.RemoveAt(tempList.IndexOf(x));
+                        }
+                        break;
+                    case 'B':
+                        //B means to take the upper half
+                        for (int x = min; x < middle; x++)
+                        {
+                            tempList.RemoveAt(tempList.IndexOf(x));
+                        }
+                        break;
+                    case 'R':
+                        //R means to take the upper half
+                        for (int x = min; x < middle; x++)
+                        {
+                            tempList.RemoveAt(tempList.IndexOf(x));
+                        }
+                        break;
+                    case 'L':
+                        for (int x = middle; x <= max; x++)
+                        {
+                            tempList.RemoveAt(tempList.IndexOf(x));
+                        }
+                        break;
+                }
+                return tempList;
+            }
         }
     }
 
@@ -646,6 +948,21 @@ namespace Advent_of_Code
             ecl = _ecl;
             pid = _pid;
             isValid = _isValid;
+        }
+    }
+
+    public class Day5_Seat
+    {
+        public int row { get; set; }
+        public int collumn { get; set; }
+        public int ID { get; set; }
+
+        //3. Multiply the row by 8 and add column (x*8)+y
+        public Day5_Seat(int _row, int _collumn)
+        {
+            row = _row;
+            collumn = _collumn;
+            ID = (row * 8) + collumn;
         }
     }
 }
