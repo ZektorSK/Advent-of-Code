@@ -19,8 +19,10 @@ namespace Advent_of_Code
             //Day4Part1();
             //Day4Part2();
             //Day5Part1();
-            Day5Part2();
+            //Day5Part2();
             //Day5Test();
+            //Day6Part1();
+            Day6Part2();
             Console.ReadLine();
 
             static void Day1Part1()
@@ -693,6 +695,139 @@ namespace Advent_of_Code
                 {
                     Console.WriteLine($"Missing ID: {seat.ID}");
                 }
+            }
+            static void Day6Part1()
+            {
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input6\input.txt");
+                string input = "";
+                int count = 0;
+                List<string> subInput = new List<string>();
+
+                while ((input = sr.ReadLine()) != null)
+                {
+                    string temp = "";
+                    while (true)
+                    {
+                        if (string.IsNullOrEmpty(input) == true)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            temp += $"{input} ";
+                            input = sr.ReadLine();
+                        }
+                    }
+                    subInput.Add(temp);
+                }
+
+                for (int x = 0; x < subInput.Count(); x++)
+                {
+                    List<char> charList = new List<char>();
+                    string group = subInput[x];
+                    for (int y = 0; y < group.Length; y++)
+                    {
+                        if(charList.Any(x => x == group[y]) != true && char.IsWhiteSpace(group[y]) != true)
+                        {
+                            count++;
+                            charList.Add(group[y]);
+                        }
+                    }
+                }
+
+                Console.WriteLine(count);
+            }
+            static void Day6Part2()
+            {
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input6\input.txt");
+                string input = "";
+                int count = 0;
+
+                while ((input = sr.ReadLine()) != null)
+                {
+                    int People = 0;
+                    List<string> Strings = new List<string>();
+                    List<List<char>> charAarrayList = new List<List<char>>();
+                    List<char> uniqueLetters = new List<char>();
+                    int tempCount = 0;
+
+                    while (string.IsNullOrEmpty(input) != true)
+                    {
+                        People++;
+                        Strings.Add(input);
+                        input = sr.ReadLine();
+                    }
+
+                    Console.WriteLine($"people: {People}");
+                    foreach(string s in Strings)
+                    {
+                        Console.WriteLine($"string: {s}");
+                    }
+                    Console.WriteLine("-------------------------------------------");
+
+                    //create character arrays from string
+                    for(int x = 0; x < Strings.Count(); x++)
+                    {
+                        string tempString = Strings[x];
+                        charAarrayList.Add(tempString.ToCharArray().ToList());
+                    }
+
+                    foreach(List<char> list in charAarrayList)
+                    {
+                        Console.WriteLine($"string chars: ");
+                        foreach(char s in list)
+                        {
+                            Console.Write($"{s}, ");
+                        }
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine("-------------------------------------------");
+
+                    //create letter checks
+                    for (int x = 0; x < charAarrayList.Count(); x++)
+                    {
+                        List<char> tempList = charAarrayList[x];
+                        for(int y = 0; y < tempList.Count(); y++)
+                        {
+                            char tempLetter = tempList[y];
+                            if(uniqueLetters.Any(x => x == tempLetter) != true)
+                            {
+                                uniqueLetters.Add(tempLetter);
+                            }
+                        }
+                    }
+
+                    Console.WriteLine("unique letters: ");
+                    foreach(char c in uniqueLetters)
+                    {
+                        Console.Write($"{c}, ");
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("-------------------------------------------");
+
+                    //check every letter with every charArray
+                    for (int x = 0; x < uniqueLetters.Count(); x++)
+                    {
+                        char tempLetter = uniqueLetters[x];
+                        //a variable to check
+                        int totalArrays = charAarrayList.Count();
+                        int checkTemp = 0;
+                        for(int y = 0; y < totalArrays; y++)
+                        {
+                            if(charAarrayList[y].Any(x => x == tempLetter))
+                            {
+                                checkTemp++;
+                            }
+                        }
+
+                        if(checkTemp == totalArrays)
+                        {
+                            count++;
+                        }
+                    } 
+                }
+
+                Console.WriteLine($"count: {count}");
             }
 
             static void Day5Test()
