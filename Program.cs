@@ -22,7 +22,8 @@ namespace Advent_of_Code
             //Day5Part2();
             //Day5Test();
             //Day6Part1();
-            Day6Part2();
+            //Day6Part2();
+            Day7Part1();
             Console.ReadLine();
 
             static void Day1Part1()
@@ -828,6 +829,11 @@ namespace Advent_of_Code
                 }
 
                 Console.WriteLine($"count: {count}");
+            }
+            static void Day7Part1()
+            {
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input7\input.txt");
+                string line = "";
             }
 
             static void Day5Test()
