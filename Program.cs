@@ -23,7 +23,9 @@ namespace Advent_of_Code
             //Day5Test();
             //Day6Part1();
             //Day6Part2();
-            Day7Part1();
+            //Day7Part1();
+            //Day7Part1();
+            Day7Part2();
             Console.ReadLine();
 
             static void Day1Part1()
@@ -830,12 +832,6 @@ namespace Advent_of_Code
 
                 Console.WriteLine($"count: {count}");
             }
-            static void Day7Part1()
-            {
-                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input7\input.txt");
-                string line = "";
-            }
-
             static void Day5Test()
             {
                 string instruction = "FBFBBFFRLR";
@@ -904,144 +900,339 @@ namespace Advent_of_Code
                 Console.WriteLine($"row: {row}");
                 Console.WriteLine($"collumn: {collumn}\n");
                 }
-
-            static int Day3Part2FunctionFunction(int f1, int f2, List<Day3_Node> gList)
+            static void Day7Part1()
             {
-                int fx1 = 0;
-                int fy1 = 0;
-                int count = 0;
-                while (gList.Find(x => x.col == fx1 && x.row == fy1) != null)
+                StreamReader sr = new StreamReader(@"D:\My Stuff\programming\Advent of Code\input7\input.txt");
+                string line = "";
+
+                List<string> lineList = new List<string>();
+                List<Day7_Refactor> bagList = new List<Day7_Refactor>();
+
+                while ((line = sr.ReadLine()) != null)
                 {
-                    if (gList.Find(x => x.col == fx1 && x.row == fy1).value == '#')
+                    int x = 0;
+                    string tempLine = "";
+                    while (true)
                     {
-                        fx1 += f1;
-                        fy1 += f2;
-                        count++;
+                        if(line[x] != '.')
+                        {
+                            tempLine += line[x];
+                            x++;
+                        }
+                        else
+                        {
+                            tempLine += line[x];
+                            break;
+                        }
+                    }
+                    lineList.Add(tempLine);
+                }
+                foreach(string s in lineList)
+                {
+                    Console.WriteLine(s);
+                }
+                //light red bags contain 1 bright white bag, 2 muted yellow bags.
+                for (int x = 0; x < lineList.Count(); x++)
+                {
+                    string instruction = lineList[x];
+                    int containIndex = instruction.IndexOf("contain");
+                    string mainBag = instruction[0..containIndex];
+                    mainBag = mainBag.Remove(mainBag.Length - 2);
+
+                    containIndex += 8;
+
+                    if (instruction[containIndex] != 'n')
+                    {
+                        List<int> tempAmount = new List<int>();
+                        List<string> tempSB = new List<string>();
+
+                        while (instruction[containIndex] != '.')
+                        {
+                            int secondBagAmount = 0;
+                            string secondBag = "";
+
+                            string y = instruction[containIndex].ToString();
+                            secondBagAmount = int.Parse(y);
+                            tempAmount.Add(secondBagAmount);
+
+                            containIndex += 2;
+
+                            while (instruction[containIndex] != ',' && instruction[containIndex] != '.')
+                            {
+                                secondBag += instruction[containIndex];
+                                containIndex++;
+                            }
+
+                            if (secondBag.Contains("bags"))
+                            {
+                                secondBag = secondBag.Remove(secondBag.Length - 1);
+                            }
+
+                            tempSB.Add(secondBag);
+
+                            if (instruction[containIndex] != '.')
+                            {
+                                containIndex += 2;
+                            }
+                        }
+
+                        string[] _tempSB = tempSB.ToArray();
+                        int[] _tempAmount = tempAmount.ToArray();
+                        Day7_Refactor bag = new Day7_Refactor(mainBag, _tempSB, _tempAmount);
+                        bagList.Add(bag);
                     }
                     else
                     {
-                        fx1 += f1;
-                        fy1 += f2;
+                        string[] tempBags = { };
+                        int[] tempAmount = { };
+                        Day7_Refactor bag = new Day7_Refactor(mainBag, tempBags, tempAmount);
+                        bagList.Add(bag);
                     }
+
                 }
-                return count;
+                foreach (Day7_Refactor bag in bagList)
+                {
+                    Console.WriteLine($"Main bag: {bag.MainBag}");
+                    if (bag.SecondaryBags.Count() != 0)
+                    {
+                        for (int x = 0; x < bag.SecondaryBags.Count(); x++)
+                        {
+                            Console.WriteLine($"Contains: {bag.SecondaryBagsAmount[x]} {bag.SecondaryBags[x]}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Contains no other bags");
+                    }
+                    Console.WriteLine("----------------------------------");
+                }
+                Console.WriteLine();
+
+                Console.WriteLine(Day7Part1FunctionContain(bagList));
             }
+            static void Day7Part2()
+            {
+
+            }
+
+            static int Day3Part2FunctionFunction(int f1, int f2, List<Day3_Node> gList)
+                {
+                    int fx1 = 0;
+                    int fy1 = 0;
+                    int count = 0;
+                    while (gList.Find(x => x.col == fx1 && x.row == fy1) != null)
+                    {
+                        if (gList.Find(x => x.col == fx1 && x.row == fy1).value == '#')
+                        {
+                            fx1 += f1;
+                            fy1 += f2;
+                            count++;
+                        }
+                        else
+                        {
+                            fx1 += f1;
+                            fy1 += f2;
+                        }
+                    }
+                    return count;
+                }
             static int Day3Part2FunctionPattern(int c, int x)
-            {
-                switch (x)
                 {
-                    case 1:
-                        return c;
-                    case 2:
-                        return c * 10;
-                    case 3:
-                        return c * 10;
-                    case 4:
-                        return c * 10;
-                    case 5:
-                        return c * 10;
-                    default:
-                        return 0;
+                    switch (x)
+                    {
+                        case 1:
+                            return c;
+                        case 2:
+                            return c * 10;
+                        case 3:
+                            return c * 10;
+                        case 4:
+                            return c * 10;
+                        case 5:
+                            return c * 10;
+                        default:
+                            return 0;
+                    }
                 }
-            }
             static string Day4Part1FunctionField(string par, string line)
-            {
-                string back = "";
-                int parINT = line.IndexOf(par);
-                if(parINT == -1)
                 {
-                    return "0";
-                }
-                else
-                {
-                    while (line[parINT] != ':')
+                    string back = "";
+                    int parINT = line.IndexOf(par);
+                    if (parINT == -1)
                     {
+                        return "0";
+                    }
+                    else
+                    {
+                        while (line[parINT] != ':')
+                        {
+                            parINT += 1;
+                        }
                         parINT += 1;
+                        while (char.IsWhiteSpace(line[parINT]) != true)
+                        {
+                            back += line[parINT];
+                            parINT++;
+                        }
+                        return back;
                     }
-                    parINT += 1;
-                    while (char.IsWhiteSpace(line[parINT]) != true)
-                    {
-                        back += line[parINT];
-                        parINT++;
-                    }
-                    return back;
                 }
-            }
             static List<int> Day5Part1FunctionMath(List<int> tempList, char highOrdown)
-            {
-                int min = tempList.Min();
-                int max = tempList.Max();
-                int middle = 0;
-                if (min == 0)
                 {
-                    middle = tempList.Count() / 2;
-                }
-                else if (tempList.Count() % 2 != 0)
-                {
-                    double tempmiddle = (((max - min) / 2) + min) + 1;
-                    middle = Convert.ToInt32(tempmiddle);
-                } else if(tempList.Count() == 2)
-                {
+                    int min = tempList.Min();
+                    int max = tempList.Max();
+                    int middle = 0;
+                    if (min == 0)
+                    {
+                        middle = tempList.Count() / 2;
+                    }
+                    else if (tempList.Count() % 2 != 0)
+                    {
+                        double tempmiddle = (((max - min) / 2) + min) + 1;
+                        middle = Convert.ToInt32(tempmiddle);
+                    }
+                    else if (tempList.Count() == 2)
+                    {
+                        switch (highOrdown)
+                        {
+                            case 'F':
+                                //F means to take the lower half
+                                tempList.RemoveAt(1);
+                                return tempList;
+                                break;
+                            case 'B':
+                                //B means to take the upper half
+                                tempList.RemoveAt(0);
+                                return tempList;
+                                break;
+                            case 'R':
+                                //R means to take the upper half
+                                tempList.RemoveAt(0);
+                                return tempList;
+                                break;
+                            case 'L':
+                                //L means to take the lower half
+                                tempList.RemoveAt(1);
+                                return tempList;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        middle = ((max - min) / 2) + min + 1;
+                    }
                     switch (highOrdown)
                     {
                         case 'F':
                             //F means to take the lower half
-                            tempList.RemoveAt(1);
-                            return tempList;
+                            for (int x = middle; x <= max; x++)
+                            {
+                                tempList.RemoveAt(tempList.IndexOf(x));
+                            }
                             break;
                         case 'B':
                             //B means to take the upper half
-                            tempList.RemoveAt(0);
-                            return tempList;
+                            for (int x = min; x < middle; x++)
+                            {
+                                tempList.RemoveAt(tempList.IndexOf(x));
+                            }
                             break;
                         case 'R':
                             //R means to take the upper half
-                            tempList.RemoveAt(0);
-                            return tempList;
+                            for (int x = min; x < middle; x++)
+                            {
+                                tempList.RemoveAt(tempList.IndexOf(x));
+                            }
                             break;
                         case 'L':
-                            //L means to take the lower half
-                            tempList.RemoveAt(1);
-                            return tempList;
+                            for (int x = middle; x <= max; x++)
+                            {
+                                tempList.RemoveAt(tempList.IndexOf(x));
+                            }
                             break;
                     }
+                    return tempList;
                 }
-                else
+            static int Day7Part1FunctionContain(List<Day7_Refactor> allBagsList)
+            {
+                int count = 0;
+                List<List<string>> containGB = new List<List<string>>();
+                List<string> tempFirstList = new List<string>();
+                for(int x = 0; x < allBagsList.Count(); x++)
                 {
-                    middle = ((max - min) / 2) + min + 1;
+                    if(allBagsList[x].SecondaryBags.Any(x => x == "shiny gold bag"))
+                    {
+                        tempFirstList.Add(allBagsList[x].MainBag);
+                    }
                 }
-                switch (highOrdown)
+                containGB.Add(tempFirstList);
+
+                //an index to keep only iterate over the latest tier 
+                int tierIndex = 0;
+                while (true)
                 {
-                    case 'F':
-                        //F means to take the lower half
-                        for(int x = middle; x <= max; x++)
+                    List<string> tempNewTier = new List<string>();
+                    int i = 0;
+                    for(int x = 0; x < allBagsList.Count(); x++)
+                    {
+                        Day7_Refactor BagX = allBagsList[x];
+                        List<string> tierIterateList = containGB[tierIndex];
+                        for(int y = 0; y < containGB[tierIndex].Count(); y++)
                         {
-                            tempList.RemoveAt(tempList.IndexOf(x));
+                            string compareBag = tierIterateList[y];
+                            if(BagX.SecondaryBags.Any(z => z == compareBag))
+                            {
+                                tempNewTier.Add(BagX.MainBag);
+                                i = 1;
+                                break;
+                            }
                         }
+                    }
+
+                    if(i == 0)
+                    {
                         break;
-                    case 'B':
-                        //B means to take the upper half
-                        for (int x = min; x < middle; x++)
-                        {
-                            tempList.RemoveAt(tempList.IndexOf(x));
-                        }
-                        break;
-                    case 'R':
-                        //R means to take the upper half
-                        for (int x = min; x < middle; x++)
-                        {
-                            tempList.RemoveAt(tempList.IndexOf(x));
-                        }
-                        break;
-                    case 'L':
-                        for (int x = middle; x <= max; x++)
-                        {
-                            tempList.RemoveAt(tempList.IndexOf(x));
-                        }
-                        break;
+                    }
+
+                    containGB.Add(tempNewTier);
+                    tierIndex++;
                 }
-                return tempList;
+
+                ///DEBUG
+                for (int x = 0; x < containGB.Count(); x++)
+                {
+                    Console.WriteLine($"Tier: {x}");
+                    for(int y = 0; y < containGB[x].Count(); y++)
+                    {
+                        Console.WriteLine($"bag: {containGB[x][y]}");
+                    }
+                    Console.WriteLine("---------------------------");
+                }  
+
+                for(int x = 0; x < allBagsList.Count(); x++)
+                {
+                    string mainBagX = allBagsList[x].MainBag;
+                    int indexFromBack = containGB.Count() - 1;
+                    while (true)
+                    {
+                        if(indexFromBack < 0)
+                        {
+                            break;
+                        }
+                        if(containGB[indexFromBack].Any(z => z == mainBagX))
+                        {
+                            count++;
+                            break;
+                        }
+                        else
+                        {
+                            indexFromBack--;
+                        }
+                    }
+                }
+                return count;
             }
+
         }
     }
 
@@ -1091,7 +1282,6 @@ namespace Advent_of_Code
             isValid = _isValid;
         }
     }
-
     public class Day5_Seat
     {
         public int row { get; set; }
@@ -1106,5 +1296,19 @@ namespace Advent_of_Code
             ID = (row * 8) + collumn;
         }
     }
+    public class Day7_Refactor
+    {
+        public string MainBag { get; set; }
+        public string[] SecondaryBags { get; set; }
+        public int[] SecondaryBagsAmount { get; set; }
+
+        public Day7_Refactor(string mb, string[] sb, int[] sba)
+        {
+            MainBag = mb;
+            SecondaryBags = sb;
+            SecondaryBagsAmount = sba;
+        }
+    }
+
 }
 
